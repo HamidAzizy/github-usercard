@@ -1,7 +1,17 @@
+// https://api.github.com/users/hamidazizy
 /* Step 1: using axios, send a GET request to the following URL 
            (replacing the palceholder with your Github name):
            https://api.github.com/users/<your name>
 */
+axios
+  .get('https://api.github.com/users/hamidazizy')
+  .then(response => {
+    let cards = document.querySelector('.cards');
+    cards.appendChild(cardCreator(response));
+  })
+  .catch(() => {
+    alert('Unable to load your GitHub');
+  });
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
@@ -9,7 +19,6 @@
 
    Skip to Step 3.
 */
-
 /* Step 4: Pass the data received from Github into your function, 
            create a new component and add it to the DOM as a child of .cards
 */
@@ -24,8 +33,76 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = [
+  'JasonNeale',
+  'SebastianGarces',
+  'tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell'
+];
 
+followersArray.forEach(user => {
+  axios
+    .get(`https://api.github.com/users/${user}`)
+    .then(response => {
+      let cards = document.querySelector('.cards');
+      cards.appendChild(cardCreator(response));
+    })
+    .catch(() => {
+      alert('Unable to Load Followers GitHub');
+    });
+});
+//
+const cardCreator = userCard => {
+  const mycard = document.createElement('div');
+  mycard.classList.add('card');
+
+  const imgCard = document.createElement('img');
+  mycard.appendChild(imgCard);
+  imgCard.setAttribute('src', userCard.data.avatar_url);
+
+  const infoCard = document.createElement('div');
+  mycard.appendChild(infoCard);
+  infoCard.classList.add('card-info');
+
+  const nameCard = document.createElement('h3');
+  infoCard.appendChild(nameCard);
+  nameCard.classList.add('name');
+  nameCard.textContent = userCard.data.name;
+
+  const userNameCard = document.createElement('p');
+  infoCard.appendChild(userNameCard);
+  userNameCard.classList.add('username');
+  userNameCard.textContent = userCard.data.login;
+
+  const locationCard = document.createElement('p');
+  infoCard.appendChild(locationCard);
+  locationCard.textContent = `Location:  ${userCard.data.location}`;
+
+  const profileCard = document.createElement('p');
+  infoCard.appendChild(profileCard);
+  profileCard.textContent = '';
+
+  const linkGithubCard = document.createElement('a');
+  profileCard.appendChild(linkGithubCard);
+  linkGithubCard.textContent = `GitHub UR: ${userCard.data.url}`;
+
+  const followersCard = document.createElement('p');
+  infoCard.appendChild(followersCard);
+  followersCard.textContent = `Followers: ${userCard.data.followers}`;
+
+  const followingCard = document.createElement('p');
+  infoCard.appendChild(followingCard);
+  followingCard.textContent = `Following: ${userCard.data.following}`;
+
+  const bioCard = document.createElement('p');
+  infoCard.appendChild(bioCard);
+  bioCard.textContent = `Bio: ${userCard.data.bio}`;
+
+  return mycard;
+};
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
 
